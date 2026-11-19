@@ -1,0 +1,58 @@
+{% extends "oscar/checkout/checkout.html" %}
+{% load i18n %}
+
+{% block checkout_nav %}{% include 'oscar/checkout/nav.html' with step=3 %}{% endblock %}
+{% block checkout_title %}选择支付方式{% endblock %}
+
+{% block shipping_address %}{% endblock %}
+{% block shipping_method %}{% endblock %}
+{% block payment_method %}{% endblock %}
+
+{% block order_contents %}
+    {% include "oscar/checkout/partials/order_summary.html" %}
+{% endblock %}
+
+{% block payment_details %}
+<form method="post" action="{% url 'checkout:payment-method' %}" novalidate>
+    {% csrf_token %}
+    <div class="pm-list">
+        {% for m in payment_methods %}
+        <label class="pm-card {% if m.code == selected %}pm-card--on{% endif %}">
+            <input type="radio" name="payment_method" value="{{ m.code }}" {% if m.code == selected %}checked{% endif %}>
+            <span class="pm-icon"><i class="fas {{ m.icon }}"></i></span>
+            <span class="pm-body">
+                <span class="pm-name">{{ m.name }}</span>
+                {% if m.hint %}<span class="pm-hint">{{ m.hint }}</span>{% endif %}
+                <span class="pm-detail">{{ m.detail }}</span>
+            </span>
+        </label>
+        {% endfor %}
+    </div>
+
+    <div class="mt-4">
+        <button type="submit" class="btn btn-lg btn-primary" data-loading-text="正在跳转...">下一步：去支付</button>
+        <a href="{% url 'checkout:shipping-address' %}" class="btn btn-link">返回修改地址</a>
+    </div>
+
+    <p class="text-muted small mt-3 mb-0">
+        <i class="fas fa-lock"></i> 支付信息经加密传输，本页面不会存储你的卡号。
+    </p>
+</form>
+
+<style>
+    .pm-list { display: grid; gap: 10px; }
+    .pm-card {
+        display: flex; align-items: flex-start; gap: 12px; cursor: pointer;
+        border: 1px solid rgba(0,0,0,.12); border-radius: 10px; padding: 14px 16px;
+        background: #fff; transition: border-color .15s ease;
+    }
+    .pm-card:hover { border-color: rgba(0,0,0,.3); }
+    .pm-card--on { border-color: #0d6efd; box-shadow: 0 0 0 1px #0d6efd inset; }
+    .pm-card input { margin-top: 4px; }
+    .pm-icon { font-size: 18px; width: 24px; text-align: center; color: #0d6efd; }
+    .pm-body { display: flex; flex-direction: column; }
+    .pm-name { font-size: 15px; font-weight: 500; }
+    .pm-hint { font-size: 12px; color: #0f6e56; margin-left: 6px; }
+    .pm-detail { font-size: 13px; color: #6b7280; margin-top: 2px; }
+</style>
+{% endblock %}

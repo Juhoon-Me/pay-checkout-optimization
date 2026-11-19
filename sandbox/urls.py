@@ -8,6 +8,8 @@ from django.contrib.sitemaps import views
 from django.urls import include, path
 from oscar.views import handler403, handler404, handler500
 
+from apps.dashboard import views as dashboard_views
+from apps.payext import views as payext_views
 from apps.sitemaps import base_sitemaps
 
 admin.autodiscover()
@@ -16,6 +18,10 @@ urlpatterns = [
     # Include admin as convenience. It's unsupported and only included
     # for developers.
     path('admin/', admin.site.urls),
+
+    # 结账漏斗看板（只读，访问不计入埋点）
+    path('dashboard/', dashboard_views.index, name='dashboard'),
+    path('dashboard/export.csv', dashboard_views.export_csv, name='dashboard-export'),
 
     # i18n URLS need to live outside of i18n_patterns scope of Oscar
     path('i18n/', include(django.conf.urls.i18n)),
@@ -29,7 +35,10 @@ urlpatterns = [
 ]
 
 # Prefix Oscar URLs with language codes
+# 支付环节的两个页面：注册在 Oscar 之前，同名 URL 会优先命中这里
 urlpatterns += i18n_patterns(
+    path('checkout/payment-method/', payext_views.PaymentMethodSelectView.as_view(), name='payment-method-select'),
+    path('checkout/payment-details/', payext_views.PaymentDetailsView.as_view(), name='payment-details-pay'),
     path('', include(apps.get_app_config('oscar').urls[0])),
 )
 

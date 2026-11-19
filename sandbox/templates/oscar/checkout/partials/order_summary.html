@@ -1,0 +1,36 @@
+{% load currency_filters %}
+{% with basket=request.basket %}
+{% if basket and not basket.is_empty %}
+<div class="card card-body bg-light mb-4 order-summary">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3 class="h5 mb-0">订单摘要</h3>
+        <a href="{% url 'basket:summary' %}" class="small">修改商品</a>
+    </div>
+
+    <ul class="list-unstyled mb-3">
+        {% for line in basket.all_lines %}
+        <li class="d-flex justify-content-between align-items-start mb-2">
+            <span class="mr-3">{{ line.description }} <span class="text-muted">× {{ line.quantity }}</span></span>
+            <span class="text-nowrap">
+                {% if line.is_tax_known %}{{ line.line_price_incl_tax|currency:basket.currency }}{% else %}{{ line.line_price_excl_tax|currency:basket.currency }}{% endif %}
+            </span>
+        </li>
+        {% endfor %}
+    </ul>
+
+    <div class="d-flex justify-content-between">
+        <span class="text-muted">商品小计</span>
+        <span>{{ basket.total_incl_tax|currency:basket.currency }}</span>
+    </div>
+    <div class="d-flex justify-content-between">
+        <span class="text-muted">运费</span>
+        <span class="text-muted">选择配送方式时确认</span>
+    </div>
+    <hr>
+    <div class="d-flex justify-content-between" style="font-weight:500">
+        <span>当前应付</span>
+        <span>{{ basket.total_incl_tax|currency:basket.currency }} 起</span>
+    </div>
+</div>
+{% endif %}
+{% endwith %}

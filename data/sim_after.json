@@ -1,0 +1,618 @@
+[
+  {
+    "ok": true,
+    "url": "http://127.0.0.1:8000/en-gb/checkout/thank-you/",
+    "trail": [
+      [
+        "gateway",
+        200
+      ],
+      [
+        "address",
+        200
+      ],
+      [
+        "payment_method",
+        200
+      ],
+      [
+        "payment_details",
+        200
+      ],
+      [
+        "preview",
+        200
+      ],
+      [
+        "done",
+        200
+      ]
+    ],
+    "pages": 6,
+    "index": 0,
+    "seconds": 0.27,
+    "simulated_fail": null
+  },
+  {
+    "ok": true,
+    "url": "http://127.0.0.1:8000/en-gb/checkout/thank-you/",
+    "trail": [
+      [
+        "gateway",
+        200
+      ],
+      [
+        "address",
+        200
+      ],
+      [
+        "payment_method",
+        200
+      ],
+      [
+        "payment_details",
+        200
+      ],
+      [
+        "preview",
+        200
+      ],
+      [
+        "done",
+        200
+      ]
+    ],
+    "pages": 6,
+    "index": 1,
+    "seconds": 0.2,
+    "simulated_fail": null
+  },
+  {
+    "ok": false,
+    "error": "risk_blocked",
+    "trail": [
+      [
+        "gateway",
+        200
+      ],
+      [
+        "address",
+        200
+      ],
+      [
+        "payment_method",
+        200
+      ],
+      [
+        "payment_details",
+        200
+      ]
+    ],
+    "pages": 4,
+    "index": 2,
+    "seconds": 0.14,
+    "simulated_fail": "risk_blocked"
+  },
+  {
+    "ok": false,
+    "error": "network_timeout",
+    "trail": [
+      [
+        "gateway",
+        200
+      ],
+      [
+        "address",
+        200
+      ],
+      [
+        "payment_method",
+        200
+      ],
+      [
+        "payment_details",
+        200
+      ]
+    ],
+    "pages": 4,
+    "index": 3,
+    "seconds": 0.14,
+    "simulated_fail": "network_timeout"
+  },
+  {
+    "ok": false,
+    "error": "insufficient_balance",
+    "trail": [
+      [
+        "gateway",
+        200
+      ],
+      [
+        "address",
+        200
+      ],
+      [
+        "payment_method",
+        200
+      ],
+      [
+        "payment_details",
+        200
+      ]
+    ],
+    "pages": 4,
+    "index": 4,
+    "seconds": 0.14,
+    "simulated_fail": "insufficient_balance"
+  },
+  {
+    "ok": true,
+    "url": "http://127.0.0.1:8000/en-gb/checkout/thank-you/",
+    "trail": [
+      [
+        "gateway",
+        200
+      ],
+      [
+        "address",
+        200
+      ],
+      [
+        "payment_method",
+        200
+      ],
+      [
+        "payment_details",
+        200
+      ],
+      [
+        "preview",
+        200
+      ],
+      [
+        "done",
+        200
+      ]
+    ],
+    "pages": 6,
+    "index": 5,
+    "seconds": 0.18,
+    "simulated_fail": null
+  },
+  {
+    "ok": true,
+    "url": "http://127.0.0.1:8000/en-gb/checkout/thank-you/",
+    "trail": [
+      [
+        "gateway",
+        200
+      ],
+      [
+        "address",
+        200
+      ],
+      [
+        "payment_method",
+        200
+      ],
+      [
+        "payment_details",
+        200
+      ],
+      [
+        "preview",
+        200
+      ],
+      [
+        "done",
+        200
+      ]
+    ],
+    "pages": 6,
+    "index": 6,
+    "seconds": 0.18,
+    "simulated_fail": null
+  },
+  {
+    "ok": false,
+    "error": "limit_exceeded",
+    "trail": [
+      [
+        "gateway",
+        200
+      ],
+      [
+        "address",
+        200
+      ],
+      [
+        "payment_method",
+        200
+      ],
+      [
+        "payment_details",
+        200
+      ]
+    ],
+    "pages": 4,
+    "index": 7,
+    "seconds": 0.15,
+    "simulated_fail": "limit_exceeded"
+  },
+  {
+    "ok": true,
+    "url": "http://127.0.0.1:8000/en-gb/checkout/thank-you/",
+    "trail": [
+      [
+        "gateway",
+        200
+      ],
+      [
+        "address",
+        200
+      ],
+      [
+        "payment_method",
+        200
+      ],
+      [
+        "payment_details",
+        200
+      ],
+      [
+        "preview",
+        200
+      ],
+      [
+        "done",
+        200
+      ]
+    ],
+    "pages": 6,
+    "index": 8,
+    "seconds": 0.18,
+    "simulated_fail": null
+  },
+  {
+    "ok": true,
+    "url": "http://127.0.0.1:8000/en-gb/checkout/thank-you/",
+    "trail": [
+      [
+        "gateway",
+        200
+      ],
+      [
+        "address",
+        200
+      ],
+      [
+        "payment_method",
+        200
+      ],
+      [
+        "payment_details",
+        200
+      ],
+      [
+        "preview",
+        200
+      ],
+      [
+        "done",
+        200
+      ]
+    ],
+    "pages": 6,
+    "index": 9,
+    "seconds": 0.18,
+    "simulated_fail": null
+  },
+  {
+    "ok": true,
+    "url": "http://127.0.0.1:8000/en-gb/checkout/thank-you/",
+    "trail": [
+      [
+        "gateway",
+        200
+      ],
+      [
+        "address",
+        200
+      ],
+      [
+        "payment_method",
+        200
+      ],
+      [
+        "payment_details",
+        200
+      ],
+      [
+        "preview",
+        200
+      ],
+      [
+        "done",
+        200
+      ]
+    ],
+    "pages": 6,
+    "index": 10,
+    "seconds": 0.18,
+    "simulated_fail": null
+  },
+  {
+    "ok": true,
+    "url": "http://127.0.0.1:8000/en-gb/checkout/thank-you/",
+    "trail": [
+      [
+        "gateway",
+        200
+      ],
+      [
+        "address",
+        200
+      ],
+      [
+        "payment_method",
+        200
+      ],
+      [
+        "payment_details",
+        200
+      ],
+      [
+        "preview",
+        200
+      ],
+      [
+        "done",
+        200
+      ]
+    ],
+    "pages": 6,
+    "index": 11,
+    "seconds": 0.18,
+    "simulated_fail": null
+  },
+  {
+    "ok": true,
+    "url": "http://127.0.0.1:8000/en-gb/checkout/thank-you/",
+    "trail": [
+      [
+        "gateway",
+        200
+      ],
+      [
+        "address",
+        200
+      ],
+      [
+        "payment_method",
+        200
+      ],
+      [
+        "payment_details",
+        200
+      ],
+      [
+        "preview",
+        200
+      ],
+      [
+        "done",
+        200
+      ]
+    ],
+    "pages": 6,
+    "index": 12,
+    "seconds": 0.2,
+    "simulated_fail": null
+  },
+  {
+    "ok": true,
+    "url": "http://127.0.0.1:8000/en-gb/checkout/thank-you/",
+    "trail": [
+      [
+        "gateway",
+        200
+      ],
+      [
+        "address",
+        200
+      ],
+      [
+        "payment_method",
+        200
+      ],
+      [
+        "payment_details",
+        200
+      ],
+      [
+        "preview",
+        200
+      ],
+      [
+        "done",
+        200
+      ]
+    ],
+    "pages": 6,
+    "index": 13,
+    "seconds": 0.18,
+    "simulated_fail": null
+  },
+  {
+    "ok": true,
+    "url": "http://127.0.0.1:8000/en-gb/checkout/thank-you/",
+    "trail": [
+      [
+        "gateway",
+        200
+      ],
+      [
+        "address",
+        200
+      ],
+      [
+        "payment_method",
+        200
+      ],
+      [
+        "payment_details",
+        200
+      ],
+      [
+        "preview",
+        200
+      ],
+      [
+        "done",
+        200
+      ]
+    ],
+    "pages": 6,
+    "index": 14,
+    "seconds": 0.22,
+    "simulated_fail": null
+  },
+  {
+    "ok": true,
+    "url": "http://127.0.0.1:8000/en-gb/checkout/thank-you/",
+    "trail": [
+      [
+        "gateway",
+        200
+      ],
+      [
+        "address",
+        200
+      ],
+      [
+        "payment_method",
+        200
+      ],
+      [
+        "payment_details",
+        200
+      ],
+      [
+        "preview",
+        200
+      ],
+      [
+        "done",
+        200
+      ]
+    ],
+    "pages": 6,
+    "index": 15,
+    "seconds": 0.19,
+    "simulated_fail": null
+  },
+  {
+    "ok": false,
+    "error": "insufficient_balance",
+    "trail": [
+      [
+        "gateway",
+        200
+      ],
+      [
+        "address",
+        200
+      ],
+      [
+        "payment_method",
+        200
+      ],
+      [
+        "payment_details",
+        200
+      ]
+    ],
+    "pages": 4,
+    "index": 16,
+    "seconds": 0.14,
+    "simulated_fail": "insufficient_balance"
+  },
+  {
+    "ok": false,
+    "error": "network_timeout",
+    "trail": [
+      [
+        "gateway",
+        200
+      ],
+      [
+        "address",
+        200
+      ],
+      [
+        "payment_method",
+        200
+      ],
+      [
+        "payment_details",
+        200
+      ]
+    ],
+    "pages": 4,
+    "index": 17,
+    "seconds": 0.14,
+    "simulated_fail": "network_timeout"
+  },
+  {
+    "ok": false,
+    "error": "insufficient_balance",
+    "trail": [
+      [
+        "gateway",
+        200
+      ],
+      [
+        "address",
+        200
+      ],
+      [
+        "payment_method",
+        200
+      ],
+      [
+        "payment_details",
+        200
+      ]
+    ],
+    "pages": 4,
+    "index": 18,
+    "seconds": 0.14,
+    "simulated_fail": "insufficient_balance"
+  },
+  {
+    "ok": false,
+    "error": "insufficient_balance",
+    "trail": [
+      [
+        "gateway",
+        200
+      ],
+      [
+        "address",
+        200
+      ],
+      [
+        "payment_method",
+        200
+      ],
+      [
+        "payment_details",
+        200
+      ]
+    ],
+    "pages": 4,
+    "index": 19,
+    "seconds": 0.14,
+    "simulated_fail": "insufficient_balance"
+  }
+]

@@ -60,3 +60,5 @@ settings_local.py
 
 # test stuff
 /tests/whoosh_index/
+# 旧的搜索索引备份（本地生成，不入库）
+/sandbox/whoosh_index_bak/

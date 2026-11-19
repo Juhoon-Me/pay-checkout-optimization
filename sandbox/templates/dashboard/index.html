@@ -1,0 +1,376 @@
+{% load static %}<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>结账漏斗看板 · Pay Checkout</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 32px 24px 64px;
+    background: #f4f5f7; color: #1a1d23;
+    font: 14px/1.6 -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1180px; margin: 0 auto; }
+  header { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 24px; }
+  h1 { font-size: 22px; margin: 0 0 4px; letter-spacing: -.3px; }
+  .sub { color: #6b7280; font-size: 13px; margin: 0; }
+  .filters { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  .chip {
+    display: inline-block; padding: 6px 13px; border-radius: 999px;
+    border: 1px solid #e2e4e9; background: #fff; color: #4b5563;
+    font-size: 13px; text-decoration: none; transition: .15s;
+  }
+  .chip:hover { border-color: #c3c7cf; background: #fafbfc; }
+  .chip.on { background: #1a1d23; border-color: #1a1d23; color: #fff; font-weight: 500; }
+  .export { padding: 6px 13px; border-radius: 999px; border: 1px solid #2563eb; color: #2563eb; text-decoration: none; font-size: 13px; background: #fff; }
+  .export:hover { background: #eff5ff; }
+
+  .grid4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 22px; }
+  .kpi { background: #fff; border: 1px solid #e8eaee; border-radius: 12px; padding: 16px 18px; }
+  .kpi .label { color: #6b7280; font-size: 12.5px; margin-bottom: 6px; }
+  .kpi .val { font-size: 27px; font-weight: 650; letter-spacing: -.8px; line-height: 1.15; }
+  .kpi .val small { font-size: 13px; font-weight: 500; color: #9aa1ac; margin-left: 3px; }
+  .kpi .note { font-size: 12px; color: #9aa1ac; margin-top: 6px; }
+  .c-blue { color: #2563eb; } .c-red { color: #dc2626; } .c-green { color: #16a34a; } .c-orange { color: #ea580c; }
+
+  .card { background: #fff; border: 1px solid #e8eaee; border-radius: 12px; margin-bottom: 18px; overflow: hidden; }
+  .card > h2 {
+    font-size: 15px; margin: 0; padding: 15px 18px; border-bottom: 1px solid #f0f1f4;
+    font-weight: 600; display: flex; align-items: center; gap: 8px;
+  }
+  .card > h2 .tag { font-size: 11.5px; font-weight: 500; color: #6b7280; background: #f3f4f6; padding: 2px 8px; border-radius: 5px; }
+  .card > .body { padding: 18px; }
+  .hint { font-size: 12.5px; color: #8b919b; margin: 0 0 14px; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { text-align: left; color: #6b7280; font-weight: 500; font-size: 12px; padding: 8px 10px; border-bottom: 1px solid #eceef1; white-space: nowrap; }
+  td { padding: 9px 10px; border-bottom: 1px solid #f4f5f7; }
+  tr:last-child td { border-bottom: 0; }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+
+  .track { position: relative; height: 26px; background: #f1f2f5; border-radius: 6px; overflow: hidden; min-width: 120px; }
+  .track .fill { position: absolute; inset: 0 auto 0 0; background: #dbe6f7; border-radius: 6px; }
+  .track .fill2 { position: absolute; inset: 0 auto 0 0; background: #2563eb; border-radius: 6px; }
+  .track .fill-warn { position: absolute; inset: 0 auto 0 0; background: #fcd9c4; border-radius: 6px; }
+  .track .fill-warn2 { position: absolute; inset: 0 auto 0 0; background: #ea580c; border-radius: 6px; }
+  .track span {
+    position: absolute; right: 6px; top: 50%; transform: translateY(-50%);
+    font-size: 11.5px; color: #1f2937; font-weight: 600;
+    background: rgba(255, 255, 255, .9); padding: 1px 6px; border-radius: 4px;
+    line-height: 1.5; white-space: nowrap;
+  }
+
+  .zero { color: #dc2626; font-weight: 650; }
+  .ok { color: #16a34a; font-weight: 600; }
+  .muted { color: #9aa1ac; }
+  .pill { display: inline-block; padding: 1px 7px; border-radius: 4px; font-size: 11.5px; font-weight: 500; }
+  .pill-gray { background: #f3f4f6; color: #6b7280; }
+  .pill-red { background: #fee2e2; color: #b91c1c; }
+  .pill-green { background: #dcfce7; color: #15803d; }
+
+  .cmp { display: grid; grid-template-columns: 1.2fr 1fr 1fr; gap: 0; }
+  .cmp > div { padding: 11px 14px; border-bottom: 1px solid #f4f5f7; font-size: 13px; }
+  .cmp .h { font-weight: 500; color: #6b7280; font-size: 12px; background: #fafbfc; border-bottom: 1px solid #eceef1; }
+  .cmp .lbl { color: #4b5563; }
+
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  .legend { font-size: 12px; color: #8b919b; margin-top: 10px; display: flex; gap: 16px; flex-wrap: wrap; }
+  .dot { display: inline-block; width: 9px; height: 9px; border-radius: 2px; margin-right: 5px; vertical-align: middle; }
+
+  .ev-step { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; }
+  .scroll { max-height: 420px; overflow: auto; }
+
+  .banner {
+    background: #fff7ed; border: 1px solid #fed7aa; color: #9a3412;
+    border-radius: 10px; padding: 12px 16px; margin-bottom: 18px; font-size: 13px; line-height: 1.7;
+  }
+  .banner strong { color: #c2410c; }
+  .banner code { background: #ffedd5; padding: 1px 6px; border-radius: 4px; font-size: 12.5px; }
+
+  details.defs { margin-top: 8px; }
+  details.defs summary {
+    cursor: pointer; font-size: 13px; color: #4b5563; padding: 12px 18px;
+    background: #fafbfc; border-bottom: 1px solid #f0f1f4; user-select: none;
+  }
+  details.defs summary:hover { color: #1a1d23; }
+  details.defs .defbody { padding: 16px 18px; font-size: 13px; color: #4b5563; }
+  details.defs dl { margin: 0; display: grid; grid-template-columns: 150px 1fr; gap: 9px 14px; }
+  details.defs dt { color: #1a1d23; font-weight: 500; }
+  details.defs dd { margin: 0; color: #5b6270; }
+
+  @media (max-width: 900px) {
+    .grid4 { grid-template-columns: repeat(2, 1fr); }
+    .two { grid-template-columns: 1fr; }
+    .cmp { grid-template-columns: 1fr 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div>
+      <h1>结账漏斗看板</h1>
+      <p class="sub">
+        库里 {{ total_all }} 条事件 · 其中真人 {{ human_total }} 条
+        · 当前视图：真人 {{ human_in_view }} 条{% if mobile_total %}（移动端 {{ mobile_total }} 条）{% endif %}
+        <br>
+        当前筛选：{% if phase == 'baseline' %}改版前{% elif phase == 'after' %}改版后{% else %}全部阶段{% endif %}
+        / {% if source == 'human' %}仅真人{% elif source == 'sim' %}仅模拟{% else %}全部来源{% endif %}
+      </p>
+    </div>
+    <div class="filters">
+      <a class="chip {% if phase == 'after' %}on{% endif %}" href="?phase=after&source={{ source }}">改版后</a>
+      <a class="chip {% if phase == 'baseline' %}on{% endif %}" href="?phase=baseline&source={{ source }}">改版前</a>
+      <a class="chip {% if phase == 'all' %}on{% endif %}" href="?phase=all&source={{ source }}">全部</a>
+      <span style="width:10px"></span>
+      <a class="chip {% if source == 'all' %}on{% endif %}" href="?phase={{ phase }}&source=all">全部来源</a>
+      <a class="chip {% if source == 'human' %}on{% endif %}" href="?phase={{ phase }}&source=human">仅真人</a>
+      <a class="chip {% if source == 'sim' %}on{% endif %}" href="?phase={{ phase }}&source=sim">仅模拟</a>
+      <a class="export" href="/dashboard/export.csv?phase={{ phase }}&source={{ source }}">导出 CSV</a>
+    </div>
+  </header>
+
+  {% if human_sessions == 0 %}
+  <div class="banner">
+    <strong>目前还没有真人数据</strong>——下面的数字全部来自模拟脚本，只能证明「链路通、失败拦得住、数据记得对」，不能用来讲体验好坏。
+    把 <code>192.168.1.7:8000/en-gb/</code> 发给同学（同一 WiFi，手机浏览器直接打开，零安装），有人真实走完一单，这里就会出现「真人」记录。
+  </div>
+  {% elif human_sessions < 10 %}
+  <div class="banner">
+    真人样本目前只有 <strong>{{ human_sessions }} 个会话</strong>，还不足以讲结论。
+    继续攒到 20 个以上，「仅真人」这个筛选下的漏斗才有参考价值。
+    右上角切到「仅真人 / 仅模拟」，可以分别看两类数据，别混在一起算。
+  </div>
+  {% endif %}
+
+  <div class="grid4">
+    <div class="kpi">
+      <div class="label">结账会话数</div>
+      <div class="val">{{ report.checkout_started }}<small>个</small></div>
+      <div class="note">进入地址页的唯一会话</div>
+    </div>
+    <div class="kpi">
+      <div class="label">完成下单</div>
+      <div class="val c-green">{{ report.done_sessions }}<small>个</small></div>
+      <div class="note">到达下单成功页</div>
+    </div>
+    <div class="kpi">
+      <div class="label">整体完成率</div>
+      <div class="val {% if report.completion >= 50 %}c-green{% else %}c-orange{% endif %}">{{ report.completion }}<small>%</small></div>
+      <div class="note">完成 ÷ 结账会话</div>
+    </div>
+    <div class="kpi">
+      <div class="label">支付失败次数</div>
+      <div class="val {% if report.fail_total %}c-red{% endif %}">{{ report.fail_total }}<small>次</small></div>
+      <div class="note">成功 {{ report.payment_success }} 次 · 校验失败 {{ report.validation_errors }} 次</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>改版前后对比 <span class="tag">同一指标，两个版本</span></h2>
+    <div class="body">
+      <p class="hint">「支付方式」这一行的差距是本次改版最直接的证据：改版前该页请求全部被跳转（302），用户从未看到过这个页面。</p>
+      <div class="cmp">
+        <div class="h">指标</div>
+        <div class="h">改版前</div>
+        <div class="h">改版后</div>
+
+        <div class="lbl">支付方式页 · 到达会话</div>
+        <div>{{ compare.baseline.method_arrived }}</div>
+        <div>{{ compare.after.method_arrived }}</div>
+
+        <div class="lbl">支付方式页 · 实际渲染（200）</div>
+        <div class="{% if compare.baseline.method_rendered == 0 %}zero{% endif %}">{{ compare.baseline.method_rendered }}{% if compare.baseline.method_rendered == 0 %} （页面不存在）{% endif %}</div>
+        <div class="{% if compare.after.method_rendered > 0 %}ok{% endif %}">{{ compare.after.method_rendered }}</div>
+
+        <div class="lbl">结账会话数</div>
+        <div>{{ compare.baseline.sessions }}</div>
+        <div>{{ compare.after.sessions }}</div>
+
+        <div class="lbl">完成下单</div>
+        <div>{{ compare.baseline.done }}</div>
+        <div>{{ compare.after.done }}</div>
+
+        <div class="lbl">支付失败被记录</div>
+        <div>{{ compare.baseline.fail }}</div>
+        <div>{{ compare.after.fail }}</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>结账漏斗 <span class="tag">按会话去重 · 浅色=到达，深色=实际渲染</span></h2>
+    <div class="body">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:130px">节点</th>
+            <th>到达 / 渲染</th>
+            <th class="num" style="width:74px">到达</th>
+            <th class="num" style="width:74px">渲染</th>
+            <th class="num" style="width:86px">单步转化</th>
+            <th class="num" style="width:86px">本步流失</th>
+            <th class="num" style="width:88px">平均停留</th>
+          </tr>
+        </thead>
+        <tbody>
+        {% for r in report.funnel %}
+          <tr>
+            <td>{{ r.label }}{% if r.note %}<br><span class="muted" style="font-size:11.5px">{{ r.note }}</span>{% endif %}</td>
+            <td>
+              <div class="track">
+                <div class="fill" style="width:{{ r.width }}%"></div>
+                <div class="fill2" style="width:{{ r.rendered_width }}%"></div>
+                <span>{{ r.arrived }}{% if r.rendered != r.arrived %} → {{ r.rendered }}{% endif %}</span>
+              </div>
+            </td>
+            <td class="num">{{ r.arrived }}</td>
+            <td class="num {% if r.rendered == 0 and r.arrived > 0 %}zero{% endif %}">{{ r.rendered }}</td>
+            <td class="num">
+              {% if r.step_rate is None %}<span class="muted">—</span>
+              {% else %}{{ r.step_rate|floatformat:1 }}%{% endif %}
+            </td>
+            <td class="num {% if r.dropped > 0 %}c-red{% endif %}">{% if r.dropped > 0 %}−{{ r.dropped }}{% else %}<span class="muted">0</span>{% endif %}</td>
+            <td class="num muted">{% if r.dwell %}{{ r.dwell }}{% else %}—{% endif %}</td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+      <div class="legend">
+        <span><i class="dot" style="background:#dbe6f7"></i>到达该页的会话</span>
+        <span><i class="dot" style="background:#2563eb"></i>页面实际渲染成功（HTTP 200）</span>
+        <span>渲染数明显低于到达数 = 该页被跳转或报错，用户没真正看到</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="two">
+    <div class="card">
+      <h2>支付失败归因 <span class="tag">失败率不是结论，拆开才是</span></h2>
+      <div class="body">
+        {% if report.fail_rows %}
+          <table>
+            <thead><tr><th>原因</th><th>性质</th><th class="num">次数</th><th class="num">占比</th></tr></thead>
+            <tbody>
+            {% for f in report.fail_rows %}
+              <tr>
+                <td>{{ f.name }}</td>
+                <td><span class="pill {% if f.kind == '用户可修复' %}pill-green{% elif f.kind == '系统侧' %}pill-gray{% else %}pill-red{% endif %}">{{ f.kind }}</span></td>
+                <td class="num">{{ f.n }}</td>
+                <td class="num">{{ f.pct }}%</td>
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+          <div class="legend">每类失败对应不同产品动作：可修复→引导换方式/分期；系统侧→自动重试；风控→人工核身；主动取消→不打扰。</div>
+        {% else %}
+          <p class="muted" style="margin:0">当前筛选下没有支付失败记录。</p>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>支付方式偏好 <span class="tag">选择行为分布</span></h2>
+      <div class="body">
+        {% if report.method_rows %}
+          <table>
+            <thead><tr><th style="width:84px">方式</th><th>占比</th><th class="num">次数</th></tr></thead>
+            <tbody>
+            {% for m in report.method_rows %}
+              <tr>
+                <td>{{ m.name }}</td>
+                <td><div class="track" style="height:20px"><div class="fill2" style="width:{{ m.width }}%"></div><span>{{ m.pct }}%</span></div></td>
+                <td class="num">{{ m.n }}</td>
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+        {% else %}
+          <p class="muted" style="margin:0">当前筛选下没有支付方式选择记录。改版前不存在该页面，所以是 0。</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  {% if report.errors %}
+  <div class="card">
+    <h2>表单校验失败 TOP <span class="tag">填错最多的地方</span></h2>
+    <div class="body">
+      <table>
+        <thead><tr><th style="width:130px">节点</th><th>出错字段</th><th class="num">次数</th></tr></thead>
+        <tbody>
+        {% for e in report.errors %}
+          <tr><td>{{ e.step }}</td><td class="ev-step">{{ e.error_field }}</td><td class="num">{{ e.n }}</td></tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  {% endif %}
+
+  <div class="card">
+    <h2>最近事件 <span class="tag">确认数据在实时进</span></h2>
+    <div class="body scroll">
+      <table>
+        <thead>
+          <tr><th>时间</th><th>会话</th><th>节点</th><th>行为</th><th class="num">状态</th><th class="num">停留</th><th>方式 / 失败原因</th><th>来源</th></tr>
+        </thead>
+        <tbody>
+        {% for e in recent %}
+          <tr>
+            <td class="muted">{{ e.created_at|date:"m-d H:i:s" }}</td>
+            <td class="ev-step">{{ e.session_key|slice:":8" }}</td>
+            <td class="ev-step">{{ e.step }}</td>
+            <td>{{ e.event }}</td>
+            <td class="num">{% if e.status_code %}{{ e.status_code }}{% else %}<span class="muted">—</span>{% endif %}</td>
+            <td class="num muted">{% if e.duration_ms %}{{ e.duration_ms|floatformat:0 }}ms{% else %}—{% endif %}</td>
+            <td class="ev-step">{{ e.payment_method }}{% if e.fail_reason %} / <span class="c-red">{{ e.fail_reason }}</span>{% endif %}{% if not e.payment_method and not e.fail_reason %}<span class="muted">—</span>{% endif %}</td>
+            <td>{% if e.is_simulated %}<span class="pill pill-gray">模拟</span>{% else %}<span class="pill pill-green">真人</span>{% endif %}</td>
+          </tr>
+        {% empty %}
+          <tr><td colspan="8" class="muted">暂无事件</td></tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <details class="defs">
+      <summary>指标口径（面试被问「你这个数怎么算的」时照这个答）</summary>
+      <div class="defbody">
+        <dl>
+          <dt>会话</dt>
+          <dd>一个浏览器 session。同一人刷新不重复计，换设备/清 Cookie 算新会话。所有漏斗数字都按 session 去重，不是按请求数。</dd>
+
+          <dt>结账会话数</dt>
+          <dd>进入过收货地址页的唯一会话数。用它做分母，而不是全站访问量——否则会把只逛不下单的人也摊进转化率里。</dd>
+
+          <dt>完成率</dt>
+          <dd>到达下单成功页的会话 ÷ 结账会话数。注意这不是「支付成功率」，支付成功率要再拆到支付详情页。</dd>
+
+          <dt>到达 vs 渲染</dt>
+          <dd>到达 = 请求打到了这个路径；渲染 = 返回 200 且页面真实存在。两者差得多，说明该页被跳转或报错，用户没真正看到——改版前支付方式页就是 0 渲染。</dd>
+
+          <dt>单步转化 / 本步流失</dt>
+          <dd>本步到达 ÷ 上一步到达。流失只看相邻两步，不能跨步比较。</dd>
+
+          <dt>支付失败归因</dt>
+          <dd>只统计支付详情页的失败，不含表单校验失败。四类：余额不足、限额（用户可修复）；超时（系统侧）；风控（需人工）；主动取消（不该打扰）。</dd>
+
+          <dt>模拟 vs 真人</dt>
+          <dd>模拟流量带 <code>X-Simulated</code> 头，真人没有。真人数据才可用于讲体验结论；模拟数据只用于验证链路与埋点正确性。</dd>
+        </dl>
+      </div>
+    </details>
+  </div>
+
+  <p class="sub" style="text-align:center;margin-top:22px">
+    数据存在 sandbox/db.sqlite3 · 埋点不参与业务逻辑 · 刷新即最新
+  </p>
+</div>
+</body>
+</html>

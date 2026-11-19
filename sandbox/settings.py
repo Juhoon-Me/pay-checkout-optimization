@@ -10,7 +10,9 @@ location = lambda x: os.path.join(
 
 DEBUG = env.bool('DEBUG', default=True)
 
-ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['localhost', '127.0.0.1'])
+# 192.168.1.7 是为了让同一 WiFi 下的手机能打开做真人测试，
+# 上线前必须改成正式域名，不要长期保留。
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['localhost', '127.0.0.1', '192.168.1.7'])
 
 EMAIL_SUBJECT_PREFIX = '[Oscar sandbox] '
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
@@ -168,6 +170,9 @@ MIDDLEWARE = [
 
     # Ensure a valid basket is added to the request instance for every request
     'oscar.apps.basket.middleware.BasketMiddleware',
+
+    # 结账链路行为埋点（必须放在 Session/Auth 之后）
+    'apps.tracking.middleware.CheckoutTrackingMiddleware',
 ]
 
 ROOT_URLCONF = 'urls'
@@ -306,6 +311,9 @@ INSTALLED_APPS = [
 
     # Django apps that the sandbox depends on
     'django.contrib.sitemaps',
+
+    # 结账行为埋点（本项目新增）
+    'apps.tracking',
 ]
 
 # Add Oscar's custom auth backend so users can sign in using their email
